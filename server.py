@@ -38,12 +38,12 @@ class Myserver(socketserver.BaseRequestHandler):
 			ret_str = str(ret_bytes,encoding="utf-8")
 			if ret_str == "quit":
 				print(self.client_address[0]+":"+str(self.client_address[1])+" is disconnected.")
-				conn.sendall(bytes(" ",encoding="utf-8"))
+				#conn.sendall(bytes(" ",encoding="utf-8"))
 				break
 			elif ret_str == "stop":
 				self.server.shutdown()
 				self.request.close()
-				conn.sendall(bytes(" ",encoding="utf-8"))
+				#conn.sendall(bytes(" ",encoding="utf-8"))
 				break
 			elif ret_str == "help":
 				conn.sendall(bytes("quit:disconnecte with host\nstop:turn off the server",encoding="utf-8"))
@@ -61,7 +61,6 @@ class EchoServer(socketserver.ThreadingTCPServer):
 if __name__ == "__main__":
 	try:
 		server = EchoServer((host_ip,8080),Myserver)
-		#server = socketserver.ThreadingTCPServer(('192.168.1.9',8080),Myserver)
 		server.serve_forever()
 	except Exception as e:
 		print('except:', e)
