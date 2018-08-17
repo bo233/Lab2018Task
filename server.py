@@ -72,6 +72,14 @@ class Myserver(socketserver.BaseRequestHandler):
 		# Load default font.
 		font = ImageFont.load_default()
 		
+		def screen_print(self, text):
+			# Draw a black filled box to clear the image.
+				draw.rectangle((0,0,width,height), outline=0, fill=0)
+				
+				draw.text((x, top),text, font=font, fill=255)
+				# Display image.
+				disp.image(image)
+				disp.display()
 		
 		global host_ip
 		conn = self.request
@@ -80,6 +88,7 @@ class Myserver(socketserver.BaseRequestHandler):
 		while True:
 			ret_bytes = conn.recv(1024)
 			ret_str = str(ret_bytes,encoding="utf-8")
+			print(ret_str)
 			if ret_str == "quit":
 				print(self.client_address[0]+":"+str(self.client_address[1])+" is disconnected.")
 				break
@@ -88,16 +97,17 @@ class Myserver(socketserver.BaseRequestHandler):
 				self.request.close()
 				break
 			elif ret_str == "help":
-				conn.sendall(bytes("quit:disconnecte with host\nstop:turn off the server",encoding="utf-8"))
-			elif ret_str == "display":
-				# Draw a black filled box to clear the image.
-				draw.rectangle((0,0,width,height), outline=0, fill=0)
-				
-				draw.text((x, top),"Hello,world",  font=font, fill=255)
-				# Display image.
-				disp.image(image)
-				disp.display()
-				conn.sendall(bytes("ok",encoding="utf-8"))
+				conn.sendall(bytes("quit:disconnecte with host \nstop:turn off the server \ndisplay:show message on the OLED screen , type 'display' for details",encoding="utf-8"))
+			elif ret_str.startswith("display"):
+				if ret_str == "display":
+					conn.sendall(bytes("display - show message on the OLED screen \nusage:display -m [message] \nusage:display -i \n\n\n\n"
+					+"options: -m                              display the message you input \n         -i                              display some information about the Raspberry Pi, such as IP",encoding="utf-8"))
+				elif ret_str[8:10] == "-m":
+					screen_print(ret_str[11:])
+				elif ret_str[8:10] == "-i":
+					conn.sendall(bytes("yes yes it is -i",encoding="utf-8"))
+				else:
+					conn.sendall(bytes("Please input correct commends, type 'display' for details.",encoding="utf-8"))
 			else:
 				conn.sendall(bytes("Please input correct commends, type 'help' for details.",encoding="utf-8"))
 
