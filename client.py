@@ -43,5 +43,5 @@ while True:
 		obj.sendall(bytes(inp, encoding="utf-8"))
 		ret_bytes = obj.recv(1024)
 		ret_str = str(ret_bytes,encoding="utf-8")
-		if ret_str != " ":
+		if ret_str != "ok":
 			print(ret_str)
