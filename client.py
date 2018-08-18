@@ -39,7 +39,7 @@ while True:
 	elif inp =="stop":
 		break
 	elif inp.startswith("display"):
-		if not (inp.startswith("display -m") or inp.startswith("display -i")):
+		if not (inp.startswith("display -m") or inp.startswith("display -i") or inp.startswith("display -c")):
 			ret_bytes = obj.recv(1024)
 			ret_str = str(ret_bytes,encoding="utf-8")
 			print(ret_str)

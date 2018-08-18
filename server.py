@@ -22,14 +22,6 @@ def get_host_ip():
 
 	return ip
 
-'''
-def get_host_ip():
-	#获取本机电脑名
-	myname = socket.getfqdn(socket.gethostname(  ))
-	#获取本机ip
-	myaddr = socket.gethostbyname(myname)
-	return myaddr
-'''
 	
 host_ip = get_host_ip()
 	
@@ -72,6 +64,11 @@ class Myserver(socketserver.BaseRequestHandler):
 		# Load default font.
 		font = ImageFont.load_default()
 		
+		def screen_clean():
+			draw.rectangle((0,0,width,height), outline=0, fill=0)
+			disp.image(image)
+			disp.display()
+			
 		
 		def screen_print(text):
 			# Draw a black filled box to clear the image.
@@ -92,24 +89,39 @@ class Myserver(socketserver.BaseRequestHandler):
 			ret_str = str(ret_bytes,encoding="utf-8")
 			if ret_str == "quit":
 				print(self.client_address[0]+":"+str(self.client_address[1])+" is disconnected.")
+				screen_clean()
 				break
 			elif ret_str == "stop":
 				self.server.shutdown()
 				self.request.close()
+				screen_clean()
 				break
 			elif ret_str == "help":
 				conn.sendall(bytes("quit:disconnecte with host\n"+"stop:turn off the server\n"+"display:show message on the OLED screen , type 'display' for details",encoding="utf-8"))
 			elif ret_str.startswith("display"):
 				if ret_str == "display":
-					conn.sendall(bytes("\ndisplay - show message on the OLED screen \nusage:display -m [message] \nusage:display -i \n\n\n\n"+"options: -m               display the message you input \n         -i               display some information about the Raspberry Pi, such as IP",encoding="utf-8"))
+					conn.sendall(bytes("\ndisplay - show message on the OLED screen \n\n"+
+					"usage:display -m [message] \n"+
+					"usage:display -i "+
+					"usage:display -c"+"\n\n"+
+					"options: -m               display the message you input, just in English \n"+
+					"         -i               display some information about the Raspberry Pi, such as IP"+
+					"         -c               clean the information on the OLED screen"
+					,encoding="utf-8"))
 				elif ret_str[8:10] == "-m":
 					screen_print(ret_str[11:])
 				elif ret_str[8:10] == "-i":
-					screen_print("yes yes it is -i")
+					screen_print(
+					"This is a 12864 OLED \nscreen, powered by \nSSD1306.\n"+
+					"IP:"+host_ip)
+				elif ret_str[8:10] == "-c":
+					screen_clean()
 				else:
 					conn.sendall(bytes("Please input correct commends, type 'display' for details.",encoding="utf-8"))
 			else:
 				conn.sendall(bytes("Please input correct commends, type 'help' for details.",encoding="utf-8"))
+				
+		screen_clean()
 
 
 #为了复用地址，自定义一个类以设置allow_reuse_address = True
