@@ -73,6 +73,16 @@ class Myserver(socketserver.BaseRequestHandler):
 		font = ImageFont.load_default()
 		
 		
+		def screen_print(text):
+			# Draw a black filled box to clear the image.
+			draw.rectangle((0,0,width,height), outline=0, fill=0)
+			
+			draw.text((x, top),text,  font=font, fill=255)
+			# Display image.
+			disp.image(image)
+			disp.display()
+		
+		
 		global host_ip
 		conn = self.request
 		conn.sendall(bytes("From"+host_ip+":Connected successfully.",encoding="utf-8"))
@@ -88,16 +98,16 @@ class Myserver(socketserver.BaseRequestHandler):
 				self.request.close()
 				break
 			elif ret_str == "help":
-				conn.sendall(bytes("quit:disconnecte with host\nstop:turn off the server",encoding="utf-8"))
-			elif ret_str == "display":
-				# Draw a black filled box to clear the image.
-				draw.rectangle((0,0,width,height), outline=0, fill=0)
-				
-				draw.text((x, top),"Hello,world",  font=font, fill=255)
-				# Display image.
-				disp.image(image)
-				disp.display()
-				conn.sendall(bytes("ok",encoding="utf-8"))
+				conn.sendall(bytes("quit:disconnecte with host\n"+"stop:turn off the server\n"+"display:show message on the OLED screen , type 'display' for details",encoding="utf-8"))
+			elif ret_str.startswith("display"):
+				if ret_str == "display":
+					conn.sendall(bytes("\ndisplay - show message on the OLED screen \nusage:display -m [message] \nusage:display -i \n\n\n\n"+"options: -m               display the message you input \n         -i               display some information about the Raspberry Pi, such as IP",encoding="utf-8"))
+				elif ret_str[8:10] == "-m":
+					screen_print(ret_str[11:])
+				elif ret_str[8:10] == "-i":
+					screen_print("yes yes it is -i")
+				else:
+					conn.sendall(bytes("Please input correct commends, type 'display' for details.",encoding="utf-8"))
 			else:
 				conn.sendall(bytes("Please input correct commends, type 'help' for details.",encoding="utf-8"))
 

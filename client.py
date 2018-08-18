@@ -33,15 +33,17 @@ print(ret_str)
 
 while True:
 	inp = input(">>>")
+	obj.sendall(bytes(inp,encoding="utf-8"))
 	if inp == "quit":
-		obj.sendall(bytes(inp,encoding="utf-8"))
 		break
 	elif inp =="stop":
-		obj.sendall(bytes(inp,encoding="utf-8"))
 		break
+	elif inp.startswith("display"):
+		if not (inp.startswith("display -m") or inp.startswith("display -i")):
+			ret_bytes = obj.recv(1024)
+			ret_str = str(ret_bytes,encoding="utf-8")
+			print(ret_str)
 	else:
-		obj.sendall(bytes(inp, encoding="utf-8"))
 		ret_bytes = obj.recv(1024)
 		ret_str = str(ret_bytes,encoding="utf-8")
-		if ret_str != "ok":
-			print(ret_str)
+		print(ret_str)
