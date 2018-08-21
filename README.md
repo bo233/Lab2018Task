@@ -88,7 +88,7 @@ def get_ip_by_mac(target_mac):
 
 ## **Brief Introduction**
 
-The project consists of two parts, server and client. Server runs on the RaspberryPi ,and server need to be in the same LAN as  client is. A 12862 screen is connected with the RaspberryPi. Server is able to get data from client via Socket when running, and it can display the information on the 12864 screen via Serial. Server and client are all written in Python.
+The project consists of two parts, server and client. Server runs on the RaspberryPi ,and server need to be in the same LAN as  client is. A 12864 screen is connected with the RaspberryPi. Server is able to get data from client via Socket when running, and it can display the information on the 12864 screen via Serial. Server and client are all written in Python.
 
 ---
 ## Server
