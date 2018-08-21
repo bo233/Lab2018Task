@@ -146,7 +146,7 @@ Cilent is designed to send requests to server, receive and print answers form se
 
 #### **Feature**
 
-Due to the IP of server is changeable, function os.popen() is used to execute the command 'arp -a', and the program will analyse the echo data with the unchangeable MAC address of the RaspberryPi,then the target IP can be finded.
+Due to the IP of server is changeable, function os.popen() is used to execute the command 'arp -a', and the program will analyse the echo data with the unchangeable MAC address of the RaspberryPi,then the target IP can be found.
 ```python
 def get_ip_by_mac(target_mac):
 	for line in os.popen("arp -a"):
